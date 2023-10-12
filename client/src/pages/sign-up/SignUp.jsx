@@ -6,7 +6,7 @@ export default function SignUp() {
   const [postData, setPostData] = useState({})
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const navigate=useNavigate()
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     setPostData({ ...postData, [e.target.id]: e.target.value })
@@ -19,13 +19,13 @@ export default function SignUp() {
       .then(res => {
         setLoading(false)
         setError("")
-        if(res.status==201){
+        if (res.status == 201) {
           navigate("/sign-in")
         }
       })
       .catch(err => {
         setLoading(false)
-        setError("Username or email already using")
+        setError(err.response?.data?.message)
       })
   }
 
