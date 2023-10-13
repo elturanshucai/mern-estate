@@ -26,7 +26,6 @@ export default function SignIn() {
       .catch(err => {
         setLoading(false)
         setError(err.response?.data)
-        console.log(err)
       })
   }
 
