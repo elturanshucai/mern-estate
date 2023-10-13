@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
+import { useDispatch, useSelector } from "react-redux"
+import { signInStart, signInSuccess, signInFailure } from '../../redux/user/userSlice'
+import OAuth from '../../components/OAuth'
 
 export default function SignUp() {
   const [postData, setPostData] = useState({})
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { loading, error } = useSelector((state) => state.user)
 
   const handleChange = (e) => {
     setPostData({ ...postData, [e.target.id]: e.target.value })
@@ -14,18 +17,16 @@ export default function SignUp() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
+    dispatch(signInStart())
     axios.post(`/api/auth/signup`, postData)
       .then(res => {
-        setLoading(false)
-        setError("")
         if (res.status == 201) {
+          dispatch(signInSuccess(res.data))
           navigate("/sign-in")
         }
       })
       .catch(err => {
-        setLoading(false)
-        setError(err.response?.data?.message)
+        dispatch(signInFailure(err?.response?.data))
       })
   }
 
@@ -40,6 +41,7 @@ export default function SignUp() {
         <input type="password" placeholder='password' className='border p-3 rounded-lg'
           id='password' onChange={handleChange} />
         <button disabled={loading} className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80' onClick={handleSubmit}>{loading ? 'loading...' : 'Sign up'}</button>
+        <OAuth />
       </form>
       <div className='flex gap-2 mt-5'>
         <p>Have an account?</p>
