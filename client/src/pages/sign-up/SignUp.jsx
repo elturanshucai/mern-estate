@@ -26,7 +26,7 @@ export default function SignUp() {
         }
       })
       .catch(err => {
-        dispatch(signInFailure(err?.response?.data))
+        dispatch(signInFailure(err?.response?.data?.message || err?.response?.data))
       })
   }
 

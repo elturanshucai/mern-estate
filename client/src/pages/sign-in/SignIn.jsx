@@ -7,7 +7,8 @@ import OAuth from '../../components/OAuth'
 
 export default function SignIn() {
   const [postData, setPostData] = useState({})
-  const { loading, error } = useSelector((state) => state.user)
+  const [error, setError] = useState(null)
+  const { loading } = useSelector((state) => state.user)
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const handleChange = (e) => {
@@ -20,12 +21,14 @@ export default function SignIn() {
     axios.post(`/api/auth/signin`, postData)
       .then(res => {
         dispatch(signInSuccess(res.data))
+        setError(null)
         if (res.status == 200) {
           navigate("/")
         }
       })
       .catch(err => {
-        dispatch(signInFailure(err?.response?.data))
+        dispatch(signInFailure(err?.response?.data?.message || err?.response?.data))
+        setError(err?.response?.data?.message || err?.response?.data)
       })
   }
 
@@ -38,7 +41,7 @@ export default function SignIn() {
         <input type="password" placeholder='password' className='border p-3 rounded-lg'
           id='password' onChange={handleChange} />
         <button disabled={loading} className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80' onClick={handleSubmit}>{loading ? 'loading...' : 'Sign in'}</button>
-        <OAuth/>
+        <OAuth />
       </form>
       <div className='flex gap-2 mt-5'>
         <p>Create account?</p>
