@@ -19,7 +19,7 @@ export default function OAuth() {
                 email: result.user.email,
                 photo: result.user.photoURL
             })
-            dispatch(signInSuccess(res))
+            dispatch(signInSuccess(res.data))
             navigate("/")
         } catch (error) {
             console.log(error)
