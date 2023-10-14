@@ -1,15 +1,21 @@
 import { useEffect, useRef, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
 import { app } from "../../firebase"
+import axios from "axios"
+import { updateUserSuccess } from "../../redux/user/userSlice"
 
 export default function Profile() {
   const [file, setFile] = useState(undefined)
   const [filePerc, setFilePerc] = useState(0)
   const [fileUploadError, setFileUploadError] = useState(false)
   const [formData, setFormData] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [updateError, setUpdateError] = useState(false)
   const { currentUser } = useSelector(state => state.user)
+  const [updateSucces, setUpdateSuccess] = useState(false)
   const fileRef = useRef(null)
+  const dispatch = useDispatch()
 
   const handleFileUpload = (file) => {
     const storage = getStorage(app)
@@ -28,6 +34,28 @@ export default function Profile() {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => setFormData({ ...formData, avatar: downloadURL })).catch(err => console.log(err))
+      })
+  }
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value })
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true)
+    setUpdateError(false)
+    axios.put(`/api/user/update/${currentUser._id}`, formData)
+      .then(res => {
+        if (res.status == 200) {
+          setLoading(false)
+          dispatch(updateUserSuccess(res.data))
+          setUpdateSuccess(true)
+        }
+      }).catch(err => {
+        setLoading(false)
+        setUpdateError(true)
+        setUpdateSuccess(false)
       })
   }
 
@@ -59,15 +87,16 @@ export default function Profile() {
             )
           }
         </p>
-        <input type="text" placeholder="username" id="username" className="border p-3 rounded-lg" />
-        <input type="email" placeholder="email" id="email" className="border p-3 rounded-lg" />
-        <input type="password" placeholder="password" id="password" className="border p-3 rounded-lg" />
-        <button type="button" className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95">update</button>
+        <input type="text" placeholder="username" id="username" className="border p-3 rounded-lg" defaultValue={currentUser.username} onChange={handleChange} />
+        <input type="email" placeholder="email" id="email" className="border p-3 rounded-lg" defaultValue={currentUser.email} onChange={handleChange} />
+        <input type="password" placeholder="password" id="password" className="border p-3 rounded-lg" onChange={handleChange} />
+        <button type="button" onClick={handleSubmit} className={`${updateError ? 'bg-red-800' : 'bg-slate-700'} text-white rounded-lg p-3 uppercase hover:opacity-95`}>{loading ? 'loading...' : updateError ? 'try again' : 'update'}</button>
       </form>
       <div className="flex justify-between mt-5">
         <span className="text-red-600 cursor-pointer">Delete account</span>
         <span className="text-red-600 cursor-pointer">Sign out</span>
       </div>
+      {updateSucces && <p className="text-green-700 font-semibold mt-1">User updated successfully!</p>}
     </div>
   )
 }
