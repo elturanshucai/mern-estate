@@ -54,7 +54,7 @@ export default function Profile() {
         }
       }).catch(err => {
         setLoading(false)
-        setUpdateError(true)
+        setUpdateError(err.response.data)
         setUpdateSuccess(false)
       })
   }
@@ -96,6 +96,7 @@ export default function Profile() {
         <span className="text-red-600 cursor-pointer">Delete account</span>
         <span className="text-red-600 cursor-pointer">Sign out</span>
       </div>
+      {updateError && <p className="text-red-700">{updateError}</p>}
       {updateSucces && <p className="text-green-700 font-semibold mt-1">User updated successfully!</p>}
     </div>
   )
