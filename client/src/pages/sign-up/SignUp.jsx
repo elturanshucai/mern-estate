@@ -7,9 +7,10 @@ import OAuth from '../../components/OAuth'
 
 export default function SignUp() {
   const [postData, setPostData] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { loading, error } = useSelector((state) => state.user)
 
   const handleChange = (e) => {
     setPostData({ ...postData, [e.target.id]: e.target.value })
@@ -17,16 +18,20 @@ export default function SignUp() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    dispatch(signInStart())
+    setLoading(true)
+    setError(null)
     axios.post(`/api/auth/signup`, postData)
       .then(res => {
         if (res.status == 201) {
           dispatch(signInSuccess(res.data))
+          setLoading(false)
+          setError(null)
           navigate("/sign-in")
         }
       })
       .catch(err => {
-        dispatch(signInFailure(err?.response?.data?.message || err?.response?.data))
+        setError(err?.response?.data?.message || err?.response?.data)
+        setLoading(false)
       })
   }
 
