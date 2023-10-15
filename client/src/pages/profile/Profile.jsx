@@ -51,6 +51,14 @@ export default function Profile() {
       .catch(err => console.log(err))
   }
 
+  const signOut = () => {
+    axios.get("/api/auth/signout")
+      .then(res => {
+        if (res.status == 200) dispatch(deleteUser())
+      })
+      .catch(err => console.log(err))
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true)
@@ -104,7 +112,7 @@ export default function Profile() {
       </form>
       <div className="flex justify-between mt-5">
         <span onClick={handleDeleteUser} className="text-red-600 cursor-pointer">Delete account</span>
-        <span className="text-red-600 cursor-pointer">Sign out</span>
+        <span onClick={signOut} className="text-red-600 cursor-pointer">Sign out</span>
       </div>
       {updateError && <p className="text-red-700">{updateError}</p>}
       {updateSucces && <p className="text-green-700 font-semibold mt-1">User updated successfully!</p>}

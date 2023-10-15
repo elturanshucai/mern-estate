@@ -23,7 +23,6 @@ export default function SignUp() {
     axios.post(`/api/auth/signup`, postData)
       .then(res => {
         if (res.status == 201) {
-          dispatch(signInSuccess(res.data))
           setLoading(false)
           setError(null)
           navigate("/sign-in")
