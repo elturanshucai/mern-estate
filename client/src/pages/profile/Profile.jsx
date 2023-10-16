@@ -4,6 +4,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { app } from "../../firebase"
 import axios from "axios"
 import { deleteUser, updateUserSuccess } from "../../redux/user/userSlice"
+import {Link} from "react-router-dom"
 
 export default function Profile() {
   const [file, setFile] = useState(undefined)
@@ -109,6 +110,7 @@ export default function Profile() {
         <input type="email" placeholder="email" id="email" className="border p-3 rounded-lg" defaultValue={currentUser.email} onChange={handleChange} />
         <input type="password" placeholder="password" id="password" className="border p-3 rounded-lg" onChange={handleChange} />
         <button type="button" onClick={handleSubmit} className={`${updateError ? 'bg-red-800' : 'bg-slate-700'} text-white rounded-lg p-3 uppercase hover:opacity-95`}>{loading ? 'loading...' : updateError ? 'try again' : 'update'}</button>
+        <Link className="uppercase bg-green-700 text-white text-center rounded-lg p-3 hover:opacity-95" to="/create-listing">create listing</Link>
       </form>
       <div className="flex justify-between mt-5">
         <span onClick={handleDeleteUser} className="text-red-600 cursor-pointer">Delete account</span>
