@@ -4,7 +4,8 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { app } from "../../firebase"
 import axios from "axios"
 import { deleteUser, updateUserSuccess } from "../../redux/user/userSlice"
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
+import Listing from "./Listing"
 
 export default function Profile() {
   const [file, setFile] = useState(undefined)
@@ -13,9 +14,13 @@ export default function Profile() {
   const [formData, setFormData] = useState({})
   const [loading, setLoading] = useState(false)
   const [updateError, setUpdateError] = useState(false)
+  const [listings, setListings] = useState([])
+  const [listingLoad, setListingLoad] = useState(false)
+  const [listingError, setListingError] = useState('')
   const { currentUser } = useSelector(state => state.user)
   const [updateSucces, setUpdateSuccess] = useState(false)
   const fileRef = useRef(null)
+  const listingRef = useRef()
   const dispatch = useDispatch()
 
   const handleFileUpload = (file) => {
@@ -78,17 +83,35 @@ export default function Profile() {
       })
   }
 
+  const handleShowListings = async () => {
+    setListingLoad(true)
+    setListingError('')
+    await axios.get(`/api/user/listings/${currentUser._id}`)
+      .then(res => {
+        setListings(res.data)
+      })
+      .catch(err => setListingError(err.response.data))
+      .finally(() => setListingLoad(false))
+  }
+
+  const scrollListing = () => {
+    listingRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }
+
   //firebase storage
   // allow read;
   // allow write: if
   // request.resource.size < 2 * 1024 * 1024 &&
   // request.resource.contentType.matches('image/.*')
-
   useEffect(() => {
     if (file) {
       handleFileUpload(file)
     }
   }, [file])
+
+  useEffect(() => {
+    scrollListing()
+  }, [listings])
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
@@ -118,6 +141,14 @@ export default function Profile() {
       </div>
       {updateError && <p className="text-red-700">{updateError}</p>}
       {updateSucces && <p className="text-green-700 font-semibold mt-1">User updated successfully!</p>}
+      <button onClick={handleShowListings} className='text-green-700 w-full my-4'>{listingLoad ? 'Get Listings...' : 'Show Listings'}</button>
+      {listingError && <p className='text-red-700 mt-5'>{listingError}</p>}
+      {listings.length > 0 && <div ref={listingRef} key={listings[0]?.id} className="flex flex-col gap-4">
+        <h1 className="text-center mt-7 text-2xl font-semibold">Your listings</h1>
+        {listings.map(listing => (
+          <Listing listing={listing} />
+        ))}
+      </div>}
     </div>
   )
 }
