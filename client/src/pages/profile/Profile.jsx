@@ -146,7 +146,7 @@ export default function Profile() {
       {listings.length > 0 && <div ref={listingRef} key={listings[0]?.id} className="flex flex-col gap-4">
         <h1 className="text-center mt-7 text-2xl font-semibold">Your listings</h1>
         {listings.map(listing => (
-          <Listing listing={listing} />
+          <Listing listing={listing} setListings={setListings} />
         ))}
       </div>}
     </div>
