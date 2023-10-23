@@ -18,7 +18,9 @@ export default function ({ listing, setListings }) {
             </Link>
             <div className='flex flex-col gap-2'>
                 <button className='text-red-600 uppercase' onClick={() => deleteListing(listing._id)}>Delete</button>
-                <button className='text-yellow-400 uppercase'>Edit</button>
+                <Link to={`/update-listing/${listing._id}`}>
+                    <button className='text-yellow-400 uppercase'>Edit</button>
+                </Link>
             </div>
         </div>
     )
