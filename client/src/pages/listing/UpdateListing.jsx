@@ -145,7 +145,7 @@ export default function UpdateListing() {
             <form onSubmit={handleSubmit} className='flex flex-col gap-4 sm:flex-row'>
                 <div className='flex flex-col gap-4 flex-1'>
                     <input onChange={handleChange} type="text" placeholder='Name' className='border rounded-lg p-3' id='name' maxLength="62" minLength="5" required value={formData.name} />
-                    <textarea onChange={handleChange} type="text" placeholder='Description' className='border rounded-lg p-3 max-h-40' id='description' required value={formData.description} />
+                    <textarea onChange={handleChange} type="text" placeholder='Description' className='border rounded-lg p-3 max-h-40 h-40' id='description' required value={formData.description} />
                     <input onChange={handleChange} type="text" placeholder='Address' className='border rounded-lg p-3' id='address' required value={formData.address} />
                     <div className='flex flex-wrap gap-6'>
                         <div className='flex gap-2'>
