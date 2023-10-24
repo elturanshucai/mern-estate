@@ -43,3 +43,14 @@ export const getUserListings = async (req, res) => {
         res.status(500).json('Internal Server Error')
     }
 }
+
+export const getUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+        if (!user) return res.status(404).json('User not found')
+        const { password: pass, ...userInfo } = user._doc;
+        res.status(200).json(userInfo)
+    } catch (error) {
+        res.status(500).json('Internal Server Error')
+    }
+}
