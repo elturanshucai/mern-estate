@@ -29,7 +29,7 @@ export default function Listing() {
 
     const getListing = () => {
         setLoading(true)
-        axios.get(`/api/listing/${id}`)
+        axios.get(`/api/listing/get/${id}`)
             .then(res => setListing(res.data))
             .catch(err => console.log(err))
             .finally(() => setLoading(false))

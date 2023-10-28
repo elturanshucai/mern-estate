@@ -32,7 +32,7 @@ export default function UpdateListing() {
     const navigate = useNavigate()
 
     const getListing = () => {
-        axios.get(`/api/listing/${id}`)
+        axios.get(`/api/listing/get/${id}`)
             .then(res => setFormData(res.data))
             .catch(err => console.log(err))
     }
