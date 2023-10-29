@@ -2,6 +2,8 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Loader from '../../components/Loader'
+import ListingCard from '../../components/ListingCard'
+import NotFound from '../../components/NotFound'
 
 export default function Search() {
     const [sidebarData, setSidebarData] = useState({
@@ -186,7 +188,15 @@ export default function Search() {
             </div>
             <div className="w-full">
                 <h1 className='text-3xl font-semibold border-b p-3 text-slate-700 mt-5'>Listing results:</h1>
-                {loading ? <Loader /> : null}
+                <div className="p-7 flex flex-wrap gap-4">
+                    {loading ? <Loader /> : listings.length > 0 ?
+                        <>
+                            {listings.map(listing => (
+                                <ListingCard key={listing._id} listing={listing} />
+                            ))}
+                        </>
+                        : <NotFound />}
+                </div>
             </div>
         </div>
     )

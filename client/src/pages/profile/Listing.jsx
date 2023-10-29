@@ -13,7 +13,7 @@ export default function ({ listing, setListings }) {
     return (
         <div key={listing._id} className='border rounded-lg p-3 flex items-center gap-4'>
             <img src={listing.imageUrls[0]} className='h-16 w-16 object-contain' />
-            <Link to={`/listing/${listing._id}`} className='w-full'>
+            <Link to={`/listing/${listing._id}`} className='w-72'>
                 <p className='text-slate-700 font-semibold flex-1 hover:underline truncate'>{listing.name}</p>
             </Link>
             <div className='flex flex-col gap-2'>

@@ -19,7 +19,11 @@ export default function Header() {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search)
         const searchTermFromUrl = urlParams.get('searchTerm')
-        if (searchTermFromUrl) setSearchTerm(searchTermFromUrl)
+        if (searchTermFromUrl) {
+            setSearchTerm(searchTermFromUrl)
+        } else {
+            setSearchTerm('')
+        }
     }, [location.search])
     return (
         <header className='bg-slate-200 shadow-md'>
