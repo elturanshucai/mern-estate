@@ -17,6 +17,7 @@ export default function Search() {
     })
     const [listings, setListings] = useState([])
     const [loading, setLoading] = useState(false)
+    const [showMore, setShowMore] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -43,7 +44,14 @@ export default function Search() {
             setLoading(true)
             const searchQuery = urlParams.toString()
             axios.get(`/api/listing/search?${searchQuery}`)
-                .then(res => setListings(res.data))
+                .then(res => {
+                    setListings(res.data)
+                    if (res.data.length > 8) {
+                        setShowMore(true)
+                    } else {
+                        setShowMore(false)
+                    }
+                })
                 .catch(err => console.log(err))
                 .finally(() => setLoading(false))
         }
@@ -87,6 +95,20 @@ export default function Search() {
         urlParams.set('order', sidebarData.order)
         const searchQuery = urlParams.toString()
         navigate(`/search?${searchQuery}`)
+    }
+
+    const getMoreListings = () => {
+        const numberOfListings = listings.length
+        const startIndex = numberOfListings
+        const urlParams = new URLSearchParams(location.search)
+        urlParams.set('startIndex', startIndex)
+        const searchQuery = urlParams.toString()
+        axios.get(`/api/listing/search?${searchQuery}`)
+            .then(res => {
+                setListings([...listings, ...res.data])
+                if (res.data.length < 8) setShowMore(false)
+            })
+            .catch(err => console.log(err))
     }
     return (
         <div className='flex flex-col md:flex-row'>
@@ -197,6 +219,7 @@ export default function Search() {
                         </>
                         : <NotFound />}
                 </div>
+                {showMore && <button onClick={getMoreListings} className='text-blue-700 hover:underline p-7 text-center w-full'>Show more</button>}
             </div>
         </div>
     )

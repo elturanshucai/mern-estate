@@ -58,7 +58,7 @@ export const searchListing = async (req, res) => {
             furnished = { $in: [false, true] }
         }
 
-        let parking = req.query.furnished
+        let parking = req.query.parking
         if (parking === undefined || parking === 'false') {
             parking = { $in: [false, true] }
         }
